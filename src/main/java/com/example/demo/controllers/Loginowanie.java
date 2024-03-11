@@ -5,11 +5,9 @@ import com.example.demo.repository.UserRepository;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
