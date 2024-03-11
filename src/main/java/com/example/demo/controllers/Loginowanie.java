@@ -1,10 +1,14 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.UserRegisterDto;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.services.UserService;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,10 +23,13 @@ public class Loginowanie {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/register")
-    public void register(@RequestParam("username") String username, @RequestParam("password") String password) {
-        userRepository.register(username, password);
+    public ResponseEntity<?> register(@RequestBody @Validated UserRegisterDto registrationDto) {
+        userService.registerUser(registrationDto.getUsername(), registrationDto.getPassword());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/login")
