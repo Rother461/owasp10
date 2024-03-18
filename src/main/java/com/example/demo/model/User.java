@@ -1,9 +1,13 @@
 package com.example.demo.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.UUID;
 
 @Getter
@@ -26,5 +30,12 @@ public class User {
         this.password = password;
         this.client_id = UUID.randomUUID().toString();
         this.client_secret = UUID.randomUUID().toString();
+    }
+
+    public User(String username, String password, String client_id, String client_secret) {
+        this.username = username;
+        this.password = password;
+        this.client_id = client_id;
+        this.client_secret = client_secret;
     }
 }

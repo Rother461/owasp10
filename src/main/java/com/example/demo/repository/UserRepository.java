@@ -2,18 +2,18 @@ package com.example.demo.repository;
 
 import com.example.demo.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @Repository
 public class UserRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public void register(String username, String password, String clientId, String clientSecret) {
         String query = "INSERT INTO users(username, password, client_id, client_secret) VALUES (?, ?, ?, ?)";
@@ -22,17 +22,23 @@ public class UserRepository {
 
     public User login(String username, String password) {
 
-        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+        String usernameQuery = "SELECT * FROM users WHERE username = ?";
+
         try {
-            return jdbcTemplate.query(query, rs -> {
-                if (rs.next()) {
-                    User user = new User(rs.getString("username"), rs.getString("password"));
-                    return user;
-                }
-                return null;
-            });
-        } catch (Exception e) {
-            return null;
+            User user = jdbcTemplate.queryForObject(usernameQuery, new Object[]{username}, (rs, rowNum) ->
+                    new User(rs.getString("username"), rs.getString("password"), rs.getString("client_id"), rs.getString("client_secret"))
+            );
+
+            if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+                return user;
+            } else {
+
+                throw new UsernameNotFoundException("Invalid username or password");
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new UsernameNotFoundException("User not found with provided username");
         }
     }
+
 }
+

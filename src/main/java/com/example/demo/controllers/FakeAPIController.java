@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/fake-api")
 public class FakeAPIController {
+
     @GetMapping("/example")
     public String getExample() {
         return "{\"message\": \"Witaj w moim symulowanym API!\", \"next\": \"http://localhost:8080/fake-api/next\"}";

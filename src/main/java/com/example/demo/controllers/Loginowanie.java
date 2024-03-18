@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.UserRegisterDto;
-import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.services.UserService;
 import org.json.JSONObject;
@@ -30,12 +29,6 @@ public class Loginowanie {
     public ResponseEntity<?> register(@RequestBody @Validated UserRegisterDto registrationDto) {
         userService.registerUser(registrationDto.getUsername(), registrationDto.getPassword());
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/login")
-    public void login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        User user = userRepository.login(username, password);
-        System.out.println(user.getUsername());
     }
 
     @GetMapping("/fetch-data")
