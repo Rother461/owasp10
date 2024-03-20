@@ -40,5 +40,13 @@ public class UserRepository {
         }
     }
 
+    public User findUserByUserName(String username) {
+        String query = "SELECT * FROM users WHERE username = ?";
+
+        User user = jdbcTemplate.queryForObject(query, new Object[]{username}, (rs, rowNum) ->
+                new User(rs.getString("username"), null, rs.getString("client_id"), rs.getString("client_secret")));
+
+        return user;
+    }
 }
 

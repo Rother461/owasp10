@@ -1,11 +1,15 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.UserRegisterDto;
+import com.example.demo.entities.ErrorRes;
+import com.example.demo.entities.Pracownik;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.services.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,15 +42,20 @@ public class Loginowanie {
     }
 
     @PostMapping("/upload")
-    public void uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             String content = new BufferedReader(new InputStreamReader(file.getInputStream()))
                     .lines().collect(Collectors.joining("\n"));
             JSONObject json = XML.toJSONObject(content);
             System.out.println(json.toString(4));
 
+            ObjectMapper objectMapper = new ObjectMapper();
+            Pracownik pracownik = objectMapper.readValue(json.toString(), Pracownik.class);
+
+            return ResponseEntity.status(HttpStatus.OK).body(pracownik);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 }

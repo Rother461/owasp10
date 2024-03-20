@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import java.util.UUID;
 
@@ -20,10 +21,10 @@ public class User {
     private Long id;
 
     private String username;
+    @Nullable
     private String password;
     private String client_id;
     private String client_secret;
-
 
     public User(String username, String password) {
         this.username = username;
@@ -32,7 +33,7 @@ public class User {
         this.client_secret = UUID.randomUUID().toString();
     }
 
-    public User(String username, String password, String client_id, String client_secret) {
+    public User(String username, @Nullable String password, String client_id, String client_secret) {
         this.username = username;
         this.password = password;
         this.client_id = client_id;
