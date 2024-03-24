@@ -33,20 +33,18 @@ public class UserRepository {
                 return user;
             } else {
 
-                throw new UsernameNotFoundException("Invalid username or password");
+                throw new UsernameNotFoundException("Nieprawidłowa nazwa lub hasło");
             }
         } catch (EmptyResultDataAccessException e) {
-            throw new UsernameNotFoundException("User not found with provided username");
+            throw new UsernameNotFoundException("Użytkownik z podaną nazwa nie znaleziony");
         }
     }
 
-    public User findUserByUserName(String username) {
-        String query = "SELECT * FROM users WHERE username = ?";
+    public boolean userExistsByUsername(String username) {
+        String query = "SELECT COUNT(*) FROM users WHERE username = ?";
 
-        User user = jdbcTemplate.queryForObject(query, new Object[]{username}, (rs, rowNum) ->
-                new User(rs.getString("username"), null, rs.getString("client_id"), rs.getString("client_secret")));
-
-        return user;
+        Integer count = jdbcTemplate.queryForObject(query, new Object[]{username}, Integer.class);
+        return count != null && count > 0;
     }
 }
 
